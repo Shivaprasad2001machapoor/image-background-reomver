@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Background Removal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    
+    .form-container {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .form-container input[type="file"] {
+      margin-bottom: 10px;
+    }
+    
+    .form-container button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .result-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    .result-container img {
+      max-width: 100%;
+    }
+  </style>
+  <script>
+    function handleImageUpload(event) {
+      var file = event.target.files[0];
+      var formData = new FormData();
+      formData.append("image", file);
+      
+      fetch("/remove-background", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        displayResult(data.url);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }
+    
+    function displayResult(imageUrl) {
+      var resultContainer = document.getElementById("result-container");
+      resultContainer.innerHTML = "";
+      
+      var image = document.createElement("img");
+      image.src = imageUrl;
+      resultContainer.appendChild(image);
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Background Removal</h1>
+    <div class="form-container">
+      <input type="file" accept="image/*" onchange="handleImageUpload(event)">
+      <button>Upload</button>
+    </div>
+    <div class="result-container" id="result-container"></div>
+  </div>
+</body>
+</html>
